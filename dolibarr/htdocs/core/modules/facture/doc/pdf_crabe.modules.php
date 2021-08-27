@@ -1002,14 +1002,14 @@ class pdf_crabe extends ModelePDFFactures
 		{
 			$pdf->SetFont('', 'B', $default_font_size - 2);
 			$pdf->SetXY($this->marge_gauche, $posy);
-			$titre = $outputlangs->transnoentities("PaymentConditions").':';
+			//$titre = $outputlangs->transnoentities("PaymentConditions").':';
 			$pdf->MultiCell(43, 4, $titre, 0, 'L');
 
 			$pdf->SetFont('', '', $default_font_size - 2);
 			$pdf->SetXY($posxval, $posy);
 			$lib_condition_paiement = $outputlangs->transnoentities("PaymentCondition".$object->cond_reglement_code) != ('PaymentCondition'.$object->cond_reglement_code) ? $outputlangs->transnoentities("PaymentCondition".$object->cond_reglement_code) : $outputlangs->convToOutputCharset($object->cond_reglement_doc ? $object->cond_reglement_doc : $object->cond_reglement_label);
 			$lib_condition_paiement = str_replace('\n', "\n", $lib_condition_paiement);
-			$pdf->MultiCell(67, 4, $lib_condition_paiement, 0, 'L');
+			//$pdf->MultiCell(67, 4, $lib_condition_paiement, 0, 'L');
 
 			$posy = $pdf->GetY() + 3;
 		}
@@ -1762,7 +1762,7 @@ class pdf_crabe extends ModelePDFFactures
 			$posy += 3;
 			$pdf->SetXY($posx, $posy);
 			$pdf->SetTextColor(0, 0, 60);
-			$pdf->MultiCell($w, 3, $outputlangs->transnoentities("DateDue")." : ".dol_print_date($object->date_lim_reglement, "day", false, $outputlangs, true), '', 'R');
+			//$pdf->MultiCell($w, 3, $outputlangs->transnoentities("DateDue")." : ".dol_print_date($object->date_lim_reglement, "day", false, $outputlangs, true), '', 'R');
 		}
 
 		if ($object->thirdparty->code_client)
