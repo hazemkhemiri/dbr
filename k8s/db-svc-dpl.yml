@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: db
+  name: db-svc
+spec:
+  ports:
+  - port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: db
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: db
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - image: mariadb:10.6.3-focal
+        name: mariadb
+        env:
+        - name: MARIADB_ROOT_PASSWORD
+          value: ''
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: data-db
+      volumes:
+      - name: data-db
+        hostPath: 
+          path: ~/ms-php/data
+          type: Directory

@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: dbr
+  name: dbr-svc
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: dbr
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: dbr
+  name: dbr
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dbr
+  template:
+    metadata:
+      labels:
+        app: dbr
+    spec:
+      containers:
+      - image: hazemkhemiri/dbr:0.1
+        name: dbr
