@@ -1,45 +1,67 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: dbr-mysql
   labels:
-    app: db
-  name: db-svc
+    app: dbr
 spec:
   ports:
-  - port: 3306
-    protocol: TCP
-    targetPort: 3306
+    - port: 3306
   selector:
-    app: db
-  type: ClusterIP
+    app: dbr
+    tier: mysql
+  clusterIP: None
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  labels:
+    app: dbr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: dbr-mysql
   labels:
-    app: db
-  name: db
+    app: dbr
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      app: db
+      app: dbr
+      tier: mysql
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        app: db
+        app: dbr
+        tier: mysql
     spec:
       containers:
-      - image: mariadb:10.6.3-focal
-        name: mariadb
+      - image: mariadb:10.6.4-focal
+        name: mysql
         env:
-        - name: MARIADB_ROOT_PASSWORD
-          value: ''
+        - name: MARIADB_ALLOW_EMPTY_ROOT_PASSWORD
+          value: '1'
+#        - name: MYSQL_ROOT_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              name: mysql-pass
+#              key: password
+        ports:
+        - containerPort: 3306
+          name: mysql
         volumeMounts:
-        - mountPath: /var/lib/mysql
-          name: data-db
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
       volumes:
-      - name: data-db
-        hostPath: 
-          path: ~/ms-php/data
-          type: Directory
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
