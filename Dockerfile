@@ -53,5 +53,7 @@ RUN set -ex; \
 RUN	rm -rf /var/lib/apt/lists/*; \
 	mkdir -p /var/www/documents; 
 
-CMD ["apache2-foreground"]
+COPY	./dolibarr /var/www/html
+
+CMD	["apache2-foreground"]	
 
